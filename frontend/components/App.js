@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  Routes,
+  Route,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
 import Articles from "./Articles";
 import LoginForm from "./LoginForm";
 import Message from "./Message";
@@ -16,11 +22,13 @@ export default function App() {
   const [articles, setArticles] = useState([]);
   const [currentArticleId, setCurrentArticleId] = useState();
   const [spinnerOn, setSpinnerOn] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
 
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate();
-  const redirectToLogin = () => {
-    navigate("/");
+
+  const redirectToLogin = (token) => {
+    return redirectToLogin;
   };
 
   const redirectToArticles = () => {
@@ -35,7 +43,8 @@ export default function App() {
     // using the helper above.
     setMessage(`GoodBye!`);
     const token = localStorage.getItem("token");
-    localStorage.setItem(null);
+    localStorage.setItem("token", null);
+    setAuthenticated(false);
     navigate("/");
     return null;
   };
@@ -51,9 +60,14 @@ export default function App() {
     setSpinnerOn(true);
     axios
       .post(`http://localhost:9000/api/login`, username, password)
-      .then((res) => console.log(res))
+      .then((res) => {
+        setSpinnerOn(false);
+        setAuthenticated(true);
+        const token = localStorage.getItem("token");
+        localStorage.setItem("token", token);
+      })
       .catch((err) => console.log(err.response));
-    setSpinnerOn(false);
+    return login;
   };
 
   const getArticles = () => {
@@ -79,7 +93,6 @@ export default function App() {
         setArticles(res.data.articles);
         setCurrentArticleId(res.data.articles.article_id);
         setMessage(res.data.message);
-        setSpinnerOn(false);
         console.log(res.data.articles.article_id);
       })
       .catch((err) => console.log(err.response));
@@ -87,6 +100,8 @@ export default function App() {
 
   useEffect(() => {
     getArticles();
+    setSpinnerOn(false);
+    console.log("getArticles inititialized");
   }, []);
 
   const postArticle = (article) => {
@@ -108,7 +123,7 @@ export default function App() {
   return (
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
     <>
-      <Spinner />
+      <Spinner show={spinnerOn} />
       <Message />
       <button id="logout" onClick={logout}>
         Logout from app
@@ -129,12 +144,16 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LoginForm />} />
           <Route
-            path="articles"
+            path="/articles"
             element={
-              <>
-                <ArticleForm />
-                <Articles articles={articles} />
-              </>
+              authenticated ? (
+                <>
+                  <ArticleForm />
+                  <Articles articles={articles} />
+                </>
+              ) : (
+                <Navigate to="/" />
+              )
             }
           />
         </Routes>
