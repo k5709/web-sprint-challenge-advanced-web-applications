@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PT from "prop-types";
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 const initialFormValues = {
   username: "",
@@ -9,7 +10,7 @@ const initialFormValues = {
 export default function LoginForm(props) {
   const [values, setValues] = useState(initialFormValues);
   // ✨ where are my props? Destructure them here
-  const { spinner, spinnerOn } = props;
+  const { login } = props;
 
   const onChange = (evt) => {
     const { id, value } = evt.target;
@@ -19,7 +20,7 @@ export default function LoginForm(props) {
   const onSubmit = (evt) => {
     console.log("submit button clicked");
     evt.preventDefault();
-    // ✨ implement
+    // // ✨ implement
     const payload = {
       username: values.username,
       password: values.password,
@@ -27,9 +28,10 @@ export default function LoginForm(props) {
     axios
       .post(`http://localhost:9000/api/login`, payload)
       .then((res) => {
-        console.log(res.data);
         const token = res.data.token;
         localStorage.setItem("token", token);
+        login(payload);
+        window.location.href = "/articles";
       })
       .catch((err) => console.log(err.response));
   };

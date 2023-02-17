@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default function Articles(props) {
   // ✨ where are my props? Destructure them here
-  const { articles } = props;
+  const { articles, getArticles } = props;
   const navigate = useNavigate();
   // ✨ implement conditional logic: if no token exists
   // we should render a Navigate to login screen (React Router v.6)
@@ -18,7 +18,9 @@ export default function Articles(props) {
     };
     axios
       .get(`http://localhost:9000/api/articles`, { headers })
-      .then((res) => {})
+      .then((res) => {
+        // console.log(res.data);
+      })
       .catch((err) => console.log(err.response));
   }, []);
 
