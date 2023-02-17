@@ -5,23 +5,15 @@ import axios from "axios";
 
 export default function Articles(props) {
   // ✨ where are my props? Destructure them here
-  const { articles, getArticles } = props;
+  const { articles, getArticles, setCurrentArticleId, currentArticleId } =
+    props;
   const navigate = useNavigate();
   // ✨ implement conditional logic: if no token exists
   // we should render a Navigate to login screen (React Router v.6)
 
   useEffect(() => {
     // ✨ grab the articles here, on first render only
-    const token = localStorage.getItem("token");
-    const headers = {
-      authorization: token,
-    };
-    axios
-      .get(`http://localhost:9000/api/articles`, { headers })
-      .then((res) => {
-        // console.log(res.data);
-      })
-      .catch((err) => console.log(err.response));
+    getArticles();
   }, []);
 
   return (
@@ -31,7 +23,7 @@ export default function Articles(props) {
       <h2>Articles</h2>
       {!props.articles.length
         ? "No articles yet"
-        : props.articles.map((art) => {
+        : props.articles.map((art, index) => {
             return (
               <div className="article" key={art.article_id}>
                 <div>
@@ -40,10 +32,13 @@ export default function Articles(props) {
                   <p>Topic: {art.topic}</p>
                 </div>
                 <div>
-                  <button disabled={true} onClick={Function.prototype}>
+                  <button
+                    disabled={currentArticleId ? true : false}
+                    onClick={() => setCurrentArticleId(art.article_id)}
+                  >
                     Edit
                   </button>
-                  <button disabled={true} onClick={Function.prototype}>
+                  <button disabled={false} onClick={Function.prototype}>
                     Delete
                   </button>
                 </div>

@@ -49,19 +49,12 @@ export default function App() {
   };
 
   const login = ({ username, password }) => {
-    // ✨ implement
-    // We should flush the message state, turn on the spinner
-    // and launch a request to the proper endpoint.
-    // On success, we should set the token to local storage in a 'token' key,
-    // put the server success message in its proper state, and redirect
-    // to the Articles screen. Don't forget to turn off the spinner!
     setSpinnerOn(true);
     setMessage("");
     axios
       .post(`http://localhost:9000/api/login`, username, password)
       .then((res) => {
         setSpinnerOn(false);
-
         redirectToArticles();
       })
       .catch((err) => console.log(err.response));
@@ -69,21 +62,12 @@ export default function App() {
   };
 
   const getArticles = () => {
-    // ✨ implement
-    // We should flush the message state, turn on the spinner
-    // and launch an authenticated request to the proper endpoint.
-    // On success, we should set the articles in their proper state and
-    // put the server success message in its proper state.
-    // If something goes wrong, check the status of the response:
-    // if it's a 401 the token might have gone bad, and we should redirect to login.
-    // Don't forget to turn off the spinner!
     setMessage("");
     setSpinnerOn(true);
     const token = localStorage.getItem("token");
     const headers = {
       authorization: token,
     };
-
     {
       axios
         .get(articlesUrl, { headers })
@@ -103,25 +87,29 @@ export default function App() {
 
   useEffect(() => {
     getArticles();
+    setSpinnerOn(false);
     console.log("getArticles inititialized");
   }, []);
 
-  const postArticle = (article) => {
-    //   const postURL = `http://localhost:9000/api/articles`;
-    //   const token = localStorage.getItem("token");
-    //   const headers = {
-    //     authorization: token,
-    //   };
+  const postArticle = (values) => {
     //   // ✨ implement
     //   // The flow is very similar to the `getArticles` function.
     //   // You'll know what to do! Use log statements or breakpoints
     //   // to inspect the response from the server.
-    //   axios
-    //     .post(postURL, article, { headers })
-    //     .then((res) => {
-    //       console.log(res.data);
-    //     })
-    //     .catch((err) => console.log(err.response));
+    const token = localStorage.getItem("token");
+    const headers = {
+      authorization: token,
+    };
+    axios
+      .post(`http://localhost:9000/api/articles`, values, {
+        headers,
+      })
+      .then((res) => {
+        console.log(res);
+        setArticles(res.data.article);
+        redirectToArticles();
+      })
+      .catch((err) => console.log(err.response));
   };
 
   const updateArticle = ({ article_id, article }) => {
@@ -167,7 +155,12 @@ export default function App() {
                     updateArticle={updateArticle}
                     deleteArticle={deleteArticle}
                   />
-                  <Articles articles={articles} getArticles={getArticles} />
+                  <Articles
+                    articles={articles}
+                    getArticles={getArticles}
+                    setCurrentArticleId={setCurrentArticleId}
+                    currentArticleId={currentArticleId}
+                  />
                 </>
               </ProtectedRoute>
             }
