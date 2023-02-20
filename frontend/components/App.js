@@ -32,7 +32,6 @@ export default function App() {
   };
 
   const redirectToArticles = () => {
-    /* ✨ implement */
     return navigate("/articles");
   };
 
@@ -42,7 +41,6 @@ export default function App() {
     // and a message saying "Goodbye!" should be set in its proper state.
     // In any case, we should redirect the browser back to the login screen,
     // using the helper above.
-
     localStorage.removeItem("token");
     setMessage("Goodbye!");
     redirectToLogin();
@@ -52,13 +50,16 @@ export default function App() {
     setSpinnerOn(true);
     setMessage("");
     axios
-      .post(`http://localhost:9000/api/login`, username, password)
+      .post(`http://localhost:9000/api/login`, {
+        username: username,
+        password: password,
+      })
       .then((res) => {
+        localStorage.setItem('token',res.data.token);
         setSpinnerOn(false);
         redirectToArticles();
       })
       .catch((err) => console.log(err.response));
-    return login;
   };
 
   const getArticles = () => {
@@ -72,11 +73,9 @@ export default function App() {
       axios
         .get(articlesUrl, { headers })
         .then((res) => {
-          console.log(res);
           setArticles(res.data.articles);
           setSpinnerOn(false);
           setMessage(res.data.message);
-          redirectToArticles();
         })
         .catch((err) => {
           console.log(err.response);
@@ -86,12 +85,15 @@ export default function App() {
   };
 
   useEffect(() => {
-    getArticles();
-    setSpinnerOn(false);
-    console.log("getArticles inititialized");
+    if (localStorage.getItem("token") === null) {
+      console.log("logic worked");
+    } else {
+      getArticles();
+      console.log("articles mounted");
+    }
   }, []);
 
-  const postArticle = (values) => {
+  const postArticle = (article) => {
     //   // ✨ implement
     //   // The flow is very similar to the `getArticles` function.
     //   // You'll know what to do! Use log statements or breakpoints
@@ -101,7 +103,7 @@ export default function App() {
       authorization: token,
     };
     axios
-      .post(`http://localhost:9000/api/articles`, values, {
+      .post(`http://localhost:9000/api/articles`, article, {
         headers,
       })
       .then((res) => {
@@ -159,7 +161,6 @@ export default function App() {
                     articles={articles}
                     getArticles={getArticles}
                     setCurrentArticleId={setCurrentArticleId}
-                    currentArticleId={currentArticleId}
                   />
                 </>
               </ProtectedRoute>
