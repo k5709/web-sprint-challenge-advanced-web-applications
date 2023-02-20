@@ -1,11 +1,15 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PT from "prop-types";
-import axios from "axios";
 
 export default function Articles(props) {
-  const { articles, getArticles, setCurrentArticleId, currentArticleId } =
-    props;
+  const {
+    articles,
+    getArticles,
+    deleteArticle,
+    setCurrentArticleId,
+    currentArticleId,
+  } = props;
   const navigate = useNavigate();
 
   const redirectToLogin = () => {
@@ -13,7 +17,7 @@ export default function Articles(props) {
   };
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
+    if (localStorage.getItem("token") === null) {
       redirectToLogin();
     } else {
       getArticles();
@@ -42,7 +46,10 @@ export default function Articles(props) {
                   >
                     Edit
                   </button>
-                  <button disabled={false} onClick={Function.prototype}>
+                  <button
+                    disabled={false}
+                    onClick={() => deleteArticle(art.article_id)}
+                  >
                     Delete
                   </button>
                 </div>

@@ -13,6 +13,7 @@ import ArticleForm from "./ArticleForm";
 import Spinner from "./Spinner";
 import axios from "axios";
 import ProtectedRoute from "./ProtectedRoute";
+import { axiosWithAuth } from "../axios";
 
 const articlesUrl = "http://localhost:9000/api/articles";
 const loginUrl = "http://localhost:9000/api/login";
@@ -55,7 +56,7 @@ export default function App() {
         password: password,
       })
       .then((res) => {
-        localStorage.setItem('token',res.data.token);
+        localStorage.setItem("token", res.data.token);
         setSpinnerOn(false);
         redirectToArticles();
       })
@@ -84,20 +85,22 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-    if (localStorage.getItem("token") === null) {
-      console.log("logic worked");
-    } else {
-      getArticles();
-      console.log("articles mounted");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (localStorage.getItem("token") === null) {
+  //     console.log("logic worked");
+  //   } else {
+  //     getArticles();
+  //     console.log("articles mounted");
+  //   }
+  // }, []);
 
   const postArticle = (article) => {
     //   // ✨ implement
     //   // The flow is very similar to the `getArticles` function.
     //   // You'll know what to do! Use log statements or breakpoints
     //   // to inspect the response from the server.
+    setMessage("");
+    setSpinnerOn(true);
     const token = localStorage.getItem("token");
     const headers = {
       authorization: token,
@@ -109,7 +112,10 @@ export default function App() {
       .then((res) => {
         console.log(res);
         setArticles(res.data.article);
+        setSpinnerOn(false);
+        setMessage(res.data.message);
         redirectToArticles();
+        window.location.href = "/articles";
       })
       .catch((err) => console.log(err.response));
   };
@@ -121,6 +127,26 @@ export default function App() {
 
   const deleteArticle = (article_id) => {
     // ✨ implement
+    setMessage("");
+    setSpinnerOn(true);
+    const token = localStorage.getItem("token");
+    const headers = {
+      authorization: token,
+    };
+    axios
+      .delete(
+        `http://localhost:9000/api/articles/${article_id}`,
+        { headers },
+        article_id
+      )
+      .then((res) => {
+        console.log(res.data);
+        setMessage(res.data.message);
+        getArticles();
+        setCurrentArticleId(null);
+        setSpinnerOn(false);
+      })
+      .catch((err) => console.log(err.response));
   };
 
   return (
@@ -160,6 +186,7 @@ export default function App() {
                   <Articles
                     articles={articles}
                     getArticles={getArticles}
+                    deleteArticle={deleteArticle}
                     setCurrentArticleId={setCurrentArticleId}
                   />
                 </>
