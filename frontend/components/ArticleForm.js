@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PT from "prop-types";
+import { Navigate } from "react-router-dom";
 
 const initialFormValues = { title: "", text: "", topic: "" };
 
@@ -33,6 +34,7 @@ export default function ArticleForm(props) {
     evt.preventDefault();
 
     postArticle(values);
+    setValues(initialFormValues);
   };
 
   const isDisabled = () => {

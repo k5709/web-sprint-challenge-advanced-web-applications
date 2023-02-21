@@ -29,7 +29,7 @@ export default function Articles(props) {
     // and use the articles prop to generate articles
     <div className="articles">
       <h2>Articles</h2>
-      {!articles.length
+      {!articles
         ? "No articles yet"
         : articles.map((art) => {
             return (

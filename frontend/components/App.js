@@ -74,14 +74,13 @@ export default function App() {
       axios
         .get(articlesUrl, { headers })
         .then((res) => {
+          setMessage(res.data.message);
           setArticles(res.data.articles);
           setSpinnerOn(false);
-          setMessage(res.data.message);
         })
         .catch((err) => {
           console.log(err.response);
         });
-      // return getArticles();
     }
   };
 
@@ -110,12 +109,11 @@ export default function App() {
         headers,
       })
       .then((res) => {
-        console.log(res);
-        setArticles(res.data.article);
+        const postArt = res.data.article;
+        setArticles((article) => article.concat(postArt));
         setSpinnerOn(false);
         setMessage(res.data.message);
         redirectToArticles();
-        window.location.href = "/articles";
       })
       .catch((err) => console.log(err.response));
   };
@@ -142,9 +140,10 @@ export default function App() {
       .then((res) => {
         console.log(res.data);
         setMessage(res.data.message);
-        getArticles();
-        setCurrentArticleId(null);
+        setArticles(res.data.article);
+        console.log("message was set here");
         setSpinnerOn(false);
+        window.location.href = "/articles";
       })
       .catch((err) => console.log(err.response));
   };
@@ -182,6 +181,8 @@ export default function App() {
                     postArticle={postArticle}
                     updateArticle={updateArticle}
                     deleteArticle={deleteArticle}
+                    setCurrentArticleId={setCurrentArticleId}
+                    articles={articles}
                   />
                   <Articles
                     articles={articles}
