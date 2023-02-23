@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PT from "prop-types";
 
@@ -9,20 +9,28 @@ export default function Articles(props) {
     deleteArticle,
     setCurrentArticleId,
     currentArticleId,
+    setCurrentArticle,
+    currentArticle,
   } = props;
+
   const navigate = useNavigate();
 
   const redirectToLogin = () => {
     navigate("/");
   };
 
+  const editArt = (article_id) => {
+    setCurrentArticleId(article_id);
+    console.log(currentArticleId);
+  };
+
   useEffect(() => {
-    if (localStorage.getItem("token") === null) {
+    if (!localStorage.getItem("token")) {
       redirectToLogin();
     } else {
       getArticles();
     }
-  }, []);
+  }, [currentArticle]);
 
   return (
     // ✨ fix the JSX: replace `Function.prototype` with actual functions
@@ -41,8 +49,9 @@ export default function Articles(props) {
                 </div>
                 <div>
                   <button
+                    // onClick={() => editArt(art.article_id)}
+                    onClick={() => editArt(art.article_id)}
                     disabled={currentArticleId ? true : false}
-                    onClick={() => setCurrentArticleId(art.article_id)}
                   >
                     Edit
                   </button>

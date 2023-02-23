@@ -11,18 +11,26 @@ export default function ArticleForm(props) {
   const {
     postArticle,
     updateArticle,
-    redirectToArticles,
     currentArticleId,
     currentArticle,
     setCurrentArticleId,
-    setMessage,
   } = props;
+  // useEffect(() => {
+  //   // ✨ implement
+  //   // Every time the `currentArticle` prop changes, we should check it for truthiness:
+  //   // if it's truthy, we should set its title, text and topic into the corresponding
+  //   // values of the form. If it's not, we should reset the form back to initial values.
+  //   currentArticle ? setValues(currentArticle) : setValues(initialFormValues);
+  //   console.log(currentArticle);
+  // }, [currentArticle]);
+
   useEffect(() => {
-    // ✨ implement
-    // Every time the `currentArticle` prop changes, we should check it for truthiness:
-    // if it's truthy, we should set its title, text and topic into the corresponding
-    // values of the form. If it's not, we should reset the form back to initial values.
-    currentArticle ? setValues(currentArticle) : setValues(initialFormValues);
+    if (currentArticle) {
+      setValues(currentArticle);
+    } else {
+      setValues(initialFormValues);
+    }
+    console.log(currentArticle);
   }, [currentArticle]);
 
   const onChange = (evt) => {
@@ -32,7 +40,10 @@ export default function ArticleForm(props) {
 
   const onSubmit = (evt) => {
     evt.preventDefault();
-
+    if (currentArticle) {
+      updateArticle({ article_id: currentArticle.article_id, article: values });
+      setCurrentArticleId(null);
+    }
     postArticle(values);
     setValues(initialFormValues);
   };
@@ -72,7 +83,11 @@ export default function ArticleForm(props) {
         <button disabled={!isDisabled()} id="submitArticle">
           Submit
         </button>
-        <button onClick={() => setCurrentArticleId(null)}>Cancel edit</button>
+        {currentArticle ? (
+          <button onClick={() => setCurrentArticleId(null)}>Cancel edit</button>
+        ) : (
+          ""
+        )}
       </div>
     </form>
   );

@@ -118,9 +118,46 @@ export default function App() {
       .catch((err) => console.log(err.response));
   };
 
+  // const updateArticle = ({ article_id, article }) => {
+  //   // Make PUT request to update the article on the server
+  //   axiosWithAuth()
+  //     .put(`/articles/${article_id}`, article)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       const updatedArticles = articles.map((art) => {
+  //         if (art.article_id === article_id) {
+  //           return {
+  //             ...art,
+  //             title: article.title,
+  //             text: article.text,
+  //             topic: article.topic,
+  //           };
+  //         } else {
+  //           return art;
+  //         }
+  //       });
+  //       setArticles(updatedArticles);
+  //       setCurrentArticleId(null);
+  //       setMessage(res.data.message);
+  //       setSpinnerOn(false);
+  //     })
+  //     .catch((err) => console.log(err.response));
+  // };
+
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
+    console.log(article_id);
     // You got this!
+    setMessage("");
+    setSpinnerOn(true);
+    axiosWithAuth()
+      .put(`/articles/${article_id}`, article)
+      .then((res) => {
+        setArticles(res.data.article);
+        setMessage(res.data.message);
+        setSpinnerOn(false);
+      })
+      .catch((err) => console.log(err.response));
   };
 
   const deleteArticle = (article_id) => {
@@ -132,16 +169,11 @@ export default function App() {
       authorization: token,
     };
     axios
-      .delete(
-        `http://localhost:9000/api/articles/${article_id}`,
-        { headers },
-        article_id
-      )
+      .delete(`http://localhost:9000/api/articles/${article_id}`, { headers })
       .then((res) => {
         console.log(res.data);
         setMessage(res.data.message);
         setArticles(res.data.article);
-        console.log("message was set here");
         setSpinnerOn(false);
         window.location.href = "/articles";
       })
@@ -173,7 +205,6 @@ export default function App() {
           <Route path="/" element={<LoginForm login={login} />} />
           <Route
             path="articles"
-            // authenticated={authenticated}
             element={
               <ProtectedRoute>
                 <>
@@ -182,13 +213,19 @@ export default function App() {
                     updateArticle={updateArticle}
                     deleteArticle={deleteArticle}
                     setCurrentArticleId={setCurrentArticleId}
+                    currentArticleId={currentArticleId}
+                    currentArticle={articles?.find(
+                      (updated) => updated.article_id === currentArticleId
+                    )}
                     articles={articles}
                   />
                   <Articles
                     articles={articles}
                     getArticles={getArticles}
+                    updateArticle={updateArticle}
                     deleteArticle={deleteArticle}
                     setCurrentArticleId={setCurrentArticleId}
+                    currentArticleId={currentArticleId}
                   />
                 </>
               </ProtectedRoute>
