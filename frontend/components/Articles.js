@@ -7,9 +7,9 @@ export default function Articles(props) {
     articles,
     getArticles,
     deleteArticle,
+    updateArticle,
     setCurrentArticleId,
     currentArticleId,
-    setCurrentArticle,
     currentArticle,
   } = props;
 
@@ -21,7 +21,6 @@ export default function Articles(props) {
 
   const editArt = (article_id) => {
     setCurrentArticleId(article_id);
-    console.log(currentArticleId);
   };
 
   useEffect(() => {
@@ -56,7 +55,7 @@ export default function Articles(props) {
                     Edit
                   </button>
                   <button
-                    disabled={false}
+                    disabled={currentArticleId ? true : false}
                     onClick={() => deleteArticle(art.article_id)}
                   >
                     Delete

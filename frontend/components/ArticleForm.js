@@ -41,10 +41,17 @@ export default function ArticleForm(props) {
   const onSubmit = (evt) => {
     evt.preventDefault();
     if (currentArticle) {
-      updateArticle({ article_id: currentArticle.article_id, article: values });
+      updateArticle({
+        article_id: currentArticle.article_id,
+        article: {
+          title: values.title,
+          text: values.text,
+          topic: values.topic,
+        },
+      });
       setCurrentArticleId(null);
-    }
-    postArticle(values);
+      setValues(initialFormValues);
+    } else postArticle(values);
     setValues(initialFormValues);
   };
 

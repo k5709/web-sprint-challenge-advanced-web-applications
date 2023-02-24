@@ -119,42 +119,48 @@ export default function App() {
   };
 
   // const updateArticle = ({ article_id, article }) => {
-  //   // Make PUT request to update the article on the server
-  //   axiosWithAuth()
-  //     .put(`/articles/${article_id}`, article)
+  //   setMessage("");
+  //   setSpinnerOn(true);
+  //   const token = localStorage.getItem("token");
+  //   const headers = { authorization: token };
+  //   console.log("currentArticleId", currentArticleId, "article_id", article_id);
+  //   axios
+  //     .put(`http://localhost:9000/api/articles/${article_id}`, article, {
+  //       headers,
+  //     })
   //     .then((res) => {
-  //       console.log(res.data);
-  //       const updatedArticles = articles.map((art) => {
-  //         if (art.article_id === article_id) {
-  //           return {
-  //             ...art,
-  //             title: article.title,
-  //             text: article.text,
-  //             topic: article.topic,
-  //           };
-  //         } else {
-  //           return art;
-  //         }
-  //       });
-  //       setArticles(updatedArticles);
-  //       setCurrentArticleId(null);
+  //       const updatedArticle = res.data.article;
+  //       setArticles(
+  //         articles.map((article) => {
+  //           if (article.article_id === updatedArticle.article_id) {
+  //             return updatedArticle;
+  //           }
+  //           return article;
+  //         })
+  //       );
   //       setMessage(res.data.message);
   //       setSpinnerOn(false);
+  //       redirectToArticles();
   //     })
   //     .catch((err) => console.log(err.response));
   // };
 
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
-    console.log(article_id);
     // You got this!
     setMessage("");
     setSpinnerOn(true);
-    axiosWithAuth()
-      .put(`/articles/${article_id}`, article)
+    const token = localStorage.getItem("token");
+    const headers = { authorization: token };
+    console.log("currentArticleId", currentArticleId, "article_id", article_id);
+    axios
+      .put(`http://localhost:9000/api/articles/${article_id}`, article, {
+        headers,
+      })
       .then((res) => {
-        setArticles(res.data.article);
         setMessage(res.data.message);
+        setArticles(articles.concat(res.data.article));
+        setCurrentArticleId(null);
         setSpinnerOn(false);
       })
       .catch((err) => console.log(err.response));
