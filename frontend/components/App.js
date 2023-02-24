@@ -19,13 +19,11 @@ const articlesUrl = "http://localhost:9000/api/articles";
 const loginUrl = "http://localhost:9000/api/login";
 
 export default function App() {
-  // ✨ MVP can be achieved with these states
   const [message, setMessage] = useState("");
   const [articles, setArticles] = useState([]);
   const [currentArticleId, setCurrentArticleId] = useState();
   const [spinnerOn, setSpinnerOn] = useState(false);
 
-  // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate();
 
   const redirectToLogin = () => {
@@ -37,11 +35,6 @@ export default function App() {
   };
 
   const logout = () => {
-    // ✨ implement
-    // If a token is in local storage it should be removed,
-    // and a message saying "Goodbye!" should be set in its proper state.
-    // In any case, we should redirect the browser back to the login screen,
-    // using the helper above.
     localStorage.removeItem("token");
     setMessage("Goodbye!");
     redirectToLogin();
@@ -84,20 +77,7 @@ export default function App() {
     }
   };
 
-  // useEffect(() => {
-  //   if (localStorage.getItem("token") === null) {
-  //     console.log("logic worked");
-  //   } else {
-  //     getArticles();
-  //     console.log("articles mounted");
-  //   }
-  // }, []);
-
   const postArticle = (article) => {
-    //   // ✨ implement
-    //   // The flow is very similar to the `getArticles` function.
-    //   // You'll know what to do! Use log statements or breakpoints
-    //   // to inspect the response from the server.
     setMessage("");
     setSpinnerOn(true);
     const token = localStorage.getItem("token");
@@ -118,41 +98,11 @@ export default function App() {
       .catch((err) => console.log(err.response));
   };
 
-  // const updateArticle = ({ article_id, article }) => {
-  //   setMessage("");
-  //   setSpinnerOn(true);
-  //   const token = localStorage.getItem("token");
-  //   const headers = { authorization: token };
-  //   console.log("currentArticleId", currentArticleId, "article_id", article_id);
-  //   axios
-  //     .put(`http://localhost:9000/api/articles/${article_id}`, article, {
-  //       headers,
-  //     })
-  //     .then((res) => {
-  //       const updatedArticle = res.data.article;
-  //       setArticles(
-  //         articles.map((article) => {
-  //           if (article.article_id === updatedArticle.article_id) {
-  //             return updatedArticle;
-  //           }
-  //           return article;
-  //         })
-  //       );
-  //       setMessage(res.data.message);
-  //       setSpinnerOn(false);
-  //       redirectToArticles();
-  //     })
-  //     .catch((err) => console.log(err.response));
-  // };
-
   const updateArticle = ({ article_id, article }) => {
-    // ✨ implement
-    // You got this!
     setMessage("");
     setSpinnerOn(true);
     const token = localStorage.getItem("token");
     const headers = { authorization: token };
-    console.log("currentArticleId", currentArticleId, "article_id", article_id);
     axios
       .put(`http://localhost:9000/api/articles/${article_id}`, article, {
         headers,
@@ -167,7 +117,6 @@ export default function App() {
   };
 
   const deleteArticle = (article_id) => {
-    // ✨ implement
     setMessage("");
     setSpinnerOn(true);
     const token = localStorage.getItem("token");
@@ -187,7 +136,6 @@ export default function App() {
   };
 
   return (
-    // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
     <>
       <Spinner on={spinnerOn} />
 

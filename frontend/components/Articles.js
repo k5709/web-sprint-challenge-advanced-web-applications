@@ -32,8 +32,6 @@ export default function Articles(props) {
   }, [currentArticle]);
 
   return (
-    // ✨ fix the JSX: replace `Function.prototype` with actual functions
-    // and use the articles prop to generate articles
     <div className="articles">
       <h2>Articles</h2>
       {!articles
@@ -48,7 +46,6 @@ export default function Articles(props) {
                 </div>
                 <div>
                   <button
-                    // onClick={() => editArt(art.article_id)}
                     onClick={() => editArt(art.article_id)}
                     disabled={currentArticleId ? true : false}
                   >

@@ -9,7 +9,7 @@ const initialFormValues = {
 };
 export default function LoginForm(props) {
   const [values, setValues] = useState(initialFormValues);
-  // ✨ where are my props? Destructure them here
+
   const { login } = props;
 
   const onChange = (evt) => {
@@ -18,28 +18,9 @@ export default function LoginForm(props) {
   };
 
   const onSubmit = (evt) => {
-    console.log("submit button clicked");
     evt.preventDefault();
     login(values);
   };
-  // const onSubmit = (evt) => {
-  //   console.log("submit button clicked");
-  //   evt.preventDefault();
-  //   // // ✨ implement
-  //   const payload = {
-  //     username: values.username,
-  //     password: values.password,
-  //   };
-  //   axios
-  //     .post(`http://localhost:9000/api/login`, payload)
-  //     .then((res) => {
-  //       const token = res.data.token
-  //       localStorage.setItem("token", token);
-  //       login(payload);
-  //       window.location.href = "/articles";
-  //     })
-  //     .catch((err) => console.log(err.response));
-  // };
 
   const isDisabled = () => {
     return (
